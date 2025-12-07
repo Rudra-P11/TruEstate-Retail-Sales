@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { FilterOption } from '../utils/filterOptions';
-import { RiArrowDropDownLine, RiCheckLine, RiCloseLine } from 'react-icons/ri';
+import { RiArrowDropDownLine, RiCheckLine } from 'react-icons/ri';
 
 interface DropdownProps {
     title: string;
@@ -20,7 +20,6 @@ const Dropdown: React.FC<DropdownProps> = ({
     selectedValues,
     onSelect,
     type,
-    placeholder = 'Select...',
     sortBy,
     sortOrder,
     onSortChange,

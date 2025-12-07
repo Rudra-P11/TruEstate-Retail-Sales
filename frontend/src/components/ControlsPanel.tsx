@@ -1,7 +1,9 @@
 import Dropdown from './Dropdown';
+import AgeRangeFilter from './AgeRangeFilter';
+import DateRangeFilter from './DateRangeFilter';
 import { useSales } from '../hooks/useSalesData';
 import { staticFilterOptions } from '../utils/filterOptions';
-import { RiArrowDropDownLine, RiSettingsLine, RiSortDesc } from 'react-icons/ri'; 
+import { RiSettingsLine } from 'react-icons/ri'; 
 
 const SORT_OPTIONS = [
     { label: 'Date', value: 'date' },
@@ -20,15 +22,13 @@ const ControlsPanel = () => {
         handleSort(sortBy as 'date' | 'quantity' | 'customerName', sortOrder);
     };
     
-    const RangeFilterPlaceholder: React.FC<{ title: string }> = ({ title }) => (
-        <button
-            className="inline-flex justify-center items-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
-            title={`Implement the ${title} range picker here.`}
-        >
-            {title}
-            <RiArrowDropDownLine className="-mr-1 ml-2 h-5 w-5" />
-        </button>
-    );
+    const handleAgeRangeChange = (range: [number, number]) => {
+        handleFilterChange('ageRange', range);
+    };
+
+    const handleDateRangeChange = (range: [string, string]) => {
+        handleFilterChange('dateRange', range);
+    };
     
     return (
         <div className="bg-white p-4 rounded-xl shadow-md border border-gray-200">
@@ -52,7 +52,10 @@ const ControlsPanel = () => {
                         type="filter" 
                     />
                     
-                    <RangeFilterPlaceholder title="Age Range" />
+                    <AgeRangeFilter 
+                        selectedRange={query.ageRange} 
+                        onSelect={handleAgeRangeChange} 
+                    />
                     
                     <Dropdown 
                         title="Product Category" 
@@ -76,7 +79,10 @@ const ControlsPanel = () => {
                         type="filter" 
                     />
                     
-                    <RangeFilterPlaceholder title="Date" />
+                    <DateRangeFilter 
+                        selectedRange={query.dateRange} 
+                        onSelect={handleDateRangeChange} 
+                    />
                     
                 </div>
 

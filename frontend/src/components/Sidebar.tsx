@@ -1,5 +1,5 @@
-import { RiDashboardLine, RiUserLine, RiSettings2Line, RiFileTextLine, RiMoneyEuroCircleLine, RiMenuFoldLine, RiMenuUnfoldLine } from 'react-icons/ri';
-import { BiCube, BiFolder, BiBarChartAlt2 } from 'react-icons/bi';
+import { RiDashboardLine, RiUserLine, RiSettings2Line } from 'react-icons/ri';
+import { BiCube, BiFolder } from 'react-icons/bi';
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io';
 import { useState } from 'react';
 
