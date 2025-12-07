@@ -13,10 +13,9 @@
     "express",
     "typescript"
   ],
-  "author": "",
+  "author": "Rudra",
   "license": "ISC",
   "dependencies": {
-    "@types/csv-parser": "^1.5.1",
     "cors": "^2.8.5",
     "csv-parser": "^3.0.0",
     "dotenv": "^16.4.5",
