@@ -56,7 +56,7 @@ const SalesRecordSchema: Schema = new Schema({
     salespersonId: { type: String },
     employeeName: { type: String },
 }, {
-    collection: 'sales', 
+    collection: 'Sales', 
     timestamps: false 
 });
 
