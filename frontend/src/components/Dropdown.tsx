@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { FilterOption } from '../utils/filterOptions';
 import { RiArrowDropDownLine, RiCheckLine, RiCloseLine } from 'react-icons/ri';
 
 interface DropdownProps {
