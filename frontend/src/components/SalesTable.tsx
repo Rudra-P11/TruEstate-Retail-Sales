@@ -1,6 +1,6 @@
 import { useSales } from '../hooks/useSalesData';
 import Pagination from './Pagination';
-import { RiExternalLinkLine, RiArrowUpSLine, RiArrowDownSLine } from 'react-icons/ri';
+import { RiArrowUpSLine, RiArrowDownSLine } from 'react-icons/ri';
 import { ImSpinner2 } from 'react-icons/im';
 
 const SalesTable = () => {
@@ -25,16 +25,19 @@ const SalesTable = () => {
     };
     
     const headers = [
-        { key: 'transactionId', label: 'Transaction ID' },
-        { key: 'date', label: 'Date', sortable: true, sortKey: 'date' as const },
-        { key: 'customerId', label: 'Customer ID' },
-        { key: 'customerName', label: 'Customer name', sortable: true, sortKey: 'customerName' as const },
-        { key: 'phoneNumber', label: 'Phone Number' },
-        { key: 'gender', label: 'Gender' },
-        { key: 'age', label: 'Age' },
-        { key: 'productCategory', label: 'Product Category' },
-        { key: 'quantity', label: 'Quantity', sortable: true, sortKey: 'quantity' as const },
-        { key: 'finalAmount', label: 'Final Amount (₹)' },
+        { key: 'Transaction ID', label: 'Transaction ID' },
+        { key: 'Date', label: 'Date', sortable: true, sortKey: 'date' as const },
+        { key: 'Customer ID', label: 'Customer ID' },
+        { key: 'Customer Name', label: 'Customer name', sortable: true, sortKey: 'customerName' as const },
+        { key: 'Phone Number', label: 'Phone Number' },
+        { key: 'Gender', label: 'Gender' },
+        { key: 'Age', label: 'Age' },
+        { key: 'Product Category', label: 'Product Category' },
+        { key: 'Quantity', label: 'Quantity', sortable: true, sortKey: 'quantity' as const },
+        { key: 'Total Amount', label: 'Total Amount' },
+        { key: 'Customer Region', label: 'Customer region' },
+        { key: 'Product ID', label: 'Product ID' },
+        { key: 'Employee Name', label: 'Employee name' },
     ];
     
     const handleHeaderClick = (sortKey: 'date' | 'quantity' | 'customerName') => {
@@ -49,13 +52,13 @@ const SalesTable = () => {
     
     const SortIcon = ({ sortKey }: { sortKey: 'date' | 'quantity' | 'customerName' }) => {
         if (query.sortBy !== sortKey) {
-            return <div className="text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity"><RiArrowUpSLine className="h-4 w-4" /></div>;
+            return <div className="text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity"><RiArrowUpSLine className="h-3 w-3" /></div>;
         }
         
         if (query.sortOrder === 'asc') {
-            return <RiArrowUpSLine className="h-4 w-4 text-white" />;
+            return <RiArrowUpSLine className="h-3 w-3 text-white" />;
         }
-        return <RiArrowDownSLine className="h-4 w-4 text-white" />;
+        return <RiArrowDownSLine className="h-3 w-3 text-white" />;
     };
 
     if (error) {
@@ -88,42 +91,39 @@ const SalesTable = () => {
         
         return (
             <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-dark-table-header">
+                <table className="min-w-full divide-y divide-gray-200 text-sm">
+                    <thead className="bg-gray-800">
                         <tr>
                             {headers.map(header => (
                                 <th
                                     key={header.key}
-                                    className={`px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider ${header.sortable ? 'cursor-pointer group' : ''}`}
+                                    className={`px-3 py-1.5 text-left text-xs font-medium text-white uppercase tracking-wider ${header.sortable ? 'cursor-pointer group' : ''}`}
                                     onClick={header.sortable ? () => handleHeaderClick(header.sortKey!) : undefined}
                                 >
-                                    <div className="flex items-center space-x-1">
+                                    <div className="flex items-center space-x-0.5">
                                         <span>{header.label}</span>
                                         {header.sortable && <SortIcon sortKey={header.sortKey!} />}
                                     </div>
                                 </th>
                             ))}
-                            <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Details</th>
                         </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
                         {records.map((record) => (
                             <tr key={record._id} className="hover:bg-gray-50 transition-colors">
-                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{record.transactionId}</td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{formatDate(record.date)}</td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{record.customerId}</td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{record.customerName}</td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{record.phoneNumber}</td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{record.gender}</td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{record.age}</td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{record.productCategory}</td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-semibold">{record.quantity}</td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">₹{record.finalAmount.toFixed(2)}</td>
-                                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <button className="text-primary-blue hover:text-blue-700">
-                                        <RiExternalLinkLine className="h-5 w-5" />
-                                    </button>
-                                </td>
+                                <td className="px-3 py-1.5 whitespace-nowrap text-xs font-medium text-gray-900">{record['Transaction ID']}</td>
+                                <td className="px-3 py-1.5 whitespace-nowrap text-xs text-gray-700">{formatDate(String(record.Date))}</td>
+                                <td className="px-3 py-1.5 whitespace-nowrap text-xs text-gray-700">{record['Customer ID']}</td>
+                                <td className="px-3 py-1.5 whitespace-nowrap text-xs text-gray-700">{record['Customer Name']}</td>
+                                <td className="px-3 py-1.5 whitespace-nowrap text-xs text-gray-700">+91 {record['Phone Number']}</td>
+                                <td className="px-3 py-1.5 whitespace-nowrap text-xs text-gray-700">{record.Gender}</td>
+                                <td className="px-3 py-1.5 whitespace-nowrap text-xs text-gray-700">{record.Age}</td>
+                                <td className="px-3 py-1.5 whitespace-nowrap text-xs text-gray-700">{record['Product Category']}</td>
+                                <td className="px-3 py-1.5 whitespace-nowrap text-xs text-gray-700 font-semibold">{String(record.Quantity).padStart(2, '0')}</td>
+                                <td className="px-3 py-1.5 whitespace-nowrap text-xs text-gray-700">₹{Number(record['Total Amount']).toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</td>
+                                <td className="px-3 py-1.5 whitespace-nowrap text-xs text-gray-700">{record['Customer Region']}</td>
+                                <td className="px-3 py-1.5 whitespace-nowrap text-xs text-gray-700">{record['Product ID']}</td>
+                                <td className="px-3 py-1.5 whitespace-nowrap text-xs text-gray-700">{record['Employee Name']}</td>
                             </tr>
                         ))}
                     </tbody>
@@ -133,7 +133,7 @@ const SalesTable = () => {
     };
 
     return (
-        <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200">
+        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
             {tableContent()}
             
             <Pagination 

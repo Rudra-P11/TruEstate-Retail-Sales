@@ -4,7 +4,7 @@ import SalesTable from '../components/SalesTable';
 
 const DashboardPage = () => {
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       
       <MetricsPanel />
       

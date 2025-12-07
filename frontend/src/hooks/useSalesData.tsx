@@ -80,27 +80,24 @@ export const SalesDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
             try {
                 const pagedResponse = await axios.get<SalesApiResponse>(`${API_BASE_URL}?${params}`);
                 
-                const metricParams = buildQueryParams({ ...query, page: 1, pageSize: 99999999 }); 
-                const metricsResponse = await axios.get<SalesApiResponse>(`${API_BASE_URL}?${metricParams}`);
+                const metricsParams = buildQueryParams({ ...query, page: 1, pageSize: 1 }); 
+                const metricsResponse = await axios.get<any>(`${API_BASE_URL}/metrics?${metricsParams}`);
 
                 setResponse(pagedResponse.data);
                 
-                const metricData = metricsResponse.data.data;
-                const totals = metricData.reduce((acc, record) => {
-                    acc.totalUnitsSold += record.quantity;
-                    acc.totalAmount += record.finalAmount;
-                    const discountAmount = record.totalAmount - record.finalAmount;
-                    acc.totalDiscount += discountAmount;
-                    return acc;
-                }, { totalUnitsSold: 0, totalAmount: 0, totalDiscount: 0 });
-                
                 setMetrics({ 
-                    ...totals, 
-                    rawTotalRecords: metricsResponse.data.totalRecords 
+                    totalUnitsSold: metricsResponse.data.totalUnitsSold || 0,
+                    totalAmount: metricsResponse.data.totalAmount || 0,
+                    totalDiscount: metricsResponse.data.totalDiscount || 0,
+                    rawTotalRecords: metricsResponse.data.totalRecords || 0
                 });
 
             } catch (err) {
                 console.error("API Fetch Error:", err);
+                if (axios.isAxiosError(err)) {
+                    console.error("Axios error response:", err.response?.data);
+                    console.error("Axios error status:", err.response?.status);
+                }
                 setError("Failed to fetch data from the server. Check backend connection.");
                 setResponse(null);
             } finally {

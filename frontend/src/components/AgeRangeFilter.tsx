@@ -46,15 +46,15 @@ const AgeRangeFilter: React.FC<AgeRangeFilterProps> = ({ selectedRange, onSelect
         <div className="relative inline-block text-left" ref={dropdownRef}>
             <button
                 type="button"
-                className={`inline-flex justify-center items-center rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${
+                className={`inline-flex justify-center items-center rounded-md border px-2.5 py-1.5 text-xs font-medium transition-colors ${
                     selectedRange && (selectedRange[0] > 0 || selectedRange[1] < 100)
-                        ? 'border-primary-blue bg-primary-blue text-white'
+                        ? 'border-gray-800 bg-gray-800 text-white'
                         : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
                 }`}
                 onClick={() => setIsOpen(!isOpen)}
             >
                 {displayLabel}
-                <RiArrowDropDownLine className="-mr-1 ml-2 h-5 w-5" />
+                <RiArrowDropDownLine className="-mr-1 ml-1 h-3.5 w-3.5" />
             </button>
 
             {isOpen && (
@@ -68,7 +68,7 @@ const AgeRangeFilter: React.FC<AgeRangeFilterProps> = ({ selectedRange, onSelect
                                 max="100"
                                 value={minAge}
                                 onChange={(e) => setMinAge(e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-primary-blue"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-gray-800"
                                 placeholder="0"
                             />
                         </div>
@@ -80,20 +80,20 @@ const AgeRangeFilter: React.FC<AgeRangeFilterProps> = ({ selectedRange, onSelect
                                 max="100"
                                 value={maxAge}
                                 onChange={(e) => setMaxAge(e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-primary-blue"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-gray-800"
                                 placeholder="100"
                             />
                         </div>
                         <div className="flex space-x-2 pt-2">
                             <button
                                 onClick={handleApply}
-                                className="flex-1 bg-primary-blue text-white text-sm font-medium py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                                className="flex-1 bg-gray-800 text-white text-xs font-medium py-1.5 rounded-lg hover:bg-gray-900 transition-colors"
                             >
                                 Apply
                             </button>
                             <button
                                 onClick={handleClear}
-                                className="flex-1 border border-gray-300 text-gray-700 text-sm font-medium py-2 rounded-lg hover:bg-gray-50 transition-colors"
+                                className="flex-1 border border-gray-300 text-gray-700 text-xs font-medium py-1.5 rounded-lg hover:bg-gray-50 transition-colors"
                             >
                                 Clear
                             </button>

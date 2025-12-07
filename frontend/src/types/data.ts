@@ -1,31 +1,31 @@
 export interface SalesRecord {
     _id: string; 
-    transactionId: string;
-    date: string;
-    customerId: string;
-    customerName: string;
-    phoneNumber: string;
-    gender: string;
-    age: number;
-    customerRegion: string;
-    customerType: string; 
-    productId: string;
-    productName: string;
-    brand: string;
-    productCategory: string;
-    tags: string[]; 
-    quantity: number;
-    pricePerUnit: number;
-    discountPercentage: number;
-    totalAmount: number; 
-    finalAmount: number;
-    paymentMethod: string;
-    orderStatus: string;
-    deliveryType: string;
-    storeId: string;
-    storeLocation: string;
-    salespersonId: string;
-    employeeName: string;
+    'Transaction ID': number;
+    Date: string;
+    'Customer ID': string;
+    'Customer Name': string;
+    'Phone Number': number;
+    Gender: string;
+    Age: number;
+    'Customer Region': string;
+    'Customer Type': string; 
+    'Product ID': string;
+    'Product Name': string;
+    Brand: string;
+    'Product Category': string;
+    Tags: string; 
+    Quantity: number;
+    'Price per Unit': number;
+    'Discount Percentage': number;
+    'Total Amount': number; 
+    'Final Amount': number;
+    'Payment Method': string;
+    'Order Status': string;
+    'Delivery Type': string;
+    'Store ID': string;
+    'Store Location': string;
+    'Salesperson ID': string;
+    'Employee Name': string;
 }
 
 export interface SalesApiResponse {
@@ -57,7 +57,7 @@ export interface SalesQueryState {
 }
 
 export const API_BASE_URL = 'http://localhost:5000/api/sales';
-export const DEFAULT_PAGE_SIZE = 10; 
+export const DEFAULT_PAGE_SIZE = 25; 
 export const INITIAL_QUERY_STATE: SalesQueryState = {
     search: '',
     page: 1,

@@ -38,8 +38,8 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
     const PageButton: React.FC<{ page: number | '...' }> = ({ page }) => {
         if (page === '...') {
             return (
-                <span className="px-3 py-1 text-gray-500">
-                    <RiMoreFill className="h-5 w-5" />
+                <span className="px-1.5 py-0.5 text-gray-500">
+                    <RiMoreFill className="h-3.5 w-3.5" />
                 </span>
             );
         }
@@ -50,9 +50,9 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
             <button
                 onClick={() => onPageChange(page)}
                 disabled={isCurrent}
-                className={`px-3 py-1 text-sm font-medium rounded-lg transition-colors ${
+                className={`px-2 py-0.5 text-xs font-medium rounded-lg transition-colors ${
                     isCurrent 
-                        ? 'bg-primary-blue text-white cursor-default' 
+                        ? 'bg-gray-800 text-white cursor-default' 
                         : 'text-gray-700 hover:bg-gray-100'
                 }`}
             >
@@ -62,18 +62,18 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
     };
 
     return (
-        <div className="flex justify-between items-center mt-4">
-            <div className="text-sm text-gray-600">
+        <div className="flex justify-between items-center mt-2">
+            <div className="text-xs text-gray-600">
                 Page {currentPage} of {totalPages}
             </div>
 
-            <nav className="flex items-center space-x-1" aria-label="Pagination">
+            <nav className="flex items-center space-x-0.5" aria-label="Pagination">
                 <button
                     onClick={() => onPageChange(currentPage - 1)}
                     disabled={currentPage === 1}
-                    className="p-2 text-gray-500 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="p-1.5 text-gray-500 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                    <RiArrowLeftSLine className="h-5 w-5" />
+                    <RiArrowLeftSLine className="h-4 w-4" />
                 </button>
 
                 {pageNumbers.map((page, index) => (
@@ -83,9 +83,9 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
                 <button
                     onClick={() => onPageChange(currentPage + 1)}
                     disabled={currentPage === totalPages}
-                    className="p-2 text-gray-500 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="p-1.5 text-gray-500 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                    <RiArrowRightSLine className="h-5 w-5" />
+                    <RiArrowRightSLine className="h-4 w-4" />
                 </button>
             </nav>
         </div>

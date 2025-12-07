@@ -3,7 +3,7 @@ import AgeRangeFilter from './AgeRangeFilter';
 import DateRangeFilter from './DateRangeFilter';
 import { useSales } from '../hooks/useSalesData';
 import { staticFilterOptions } from '../utils/filterOptions';
-import { RiSettingsLine } from 'react-icons/ri'; 
+import { RiRefreshLine } from 'react-icons/ri'; 
 
 const SORT_OPTIONS = [
     { label: 'Date', value: 'date' },
@@ -12,7 +12,7 @@ const SORT_OPTIONS = [
 ];
 
 const ControlsPanel = () => {
-    const { query, handleFilterChange, handleSort } = useSales();
+    const { query, handleFilterChange, handleSort, refetch } = useSales();
 
     const createFilterHandler = (key: 'regions' | 'genders' | 'categories' | 'tags' | 'paymentMethods') => (values: string[]) => {
         handleFilterChange(key, values);
@@ -31,11 +31,17 @@ const ControlsPanel = () => {
     };
     
     return (
-        <div className="bg-white p-4 rounded-xl shadow-md border border-gray-200">
-            <div className="flex justify-between items-center">
+        <div className="bg-white p-3 rounded-lg shadow-sm border border-gray-200">
+            <div className="flex justify-between items-center gap-2">
                 
-                <div className="flex space-x-3 items-center">
-                    <RiSettingsLine className="h-5 w-5 text-gray-500" /> 
+                <div className="flex space-x-2 items-center">
+                    <button 
+                        onClick={refetch}
+                        className="p-1.5 hover:bg-gray-100 rounded-full transition-colors"
+                        title="Refresh data"
+                    >
+                        <RiRefreshLine className="h-4 w-4 text-gray-600" />
+                    </button>
                     
                     <Dropdown 
                         title="Customer Region" 
@@ -86,8 +92,8 @@ const ControlsPanel = () => {
                     
                 </div>
 
-                <div className="flex items-center space-x-2">
-                    <span className="text-sm text-gray-500 mr-2">Sort by:</span>
+                <div className="flex items-center space-x-1">
+                    <span className="text-xs text-gray-600 whitespace-nowrap">Sort by:</span>
                     <Dropdown 
                         title={SORT_OPTIONS.find(o => o.value === query.sortBy)?.label || 'Sort'}
                         options={SORT_OPTIONS}
