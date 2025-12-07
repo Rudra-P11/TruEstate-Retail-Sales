@@ -1,21 +1,4 @@
-import { loadSalesData } from '../utils/dataLoader';
 import { CleanSalesRecord } from '../models/SalesRecord';
-
-let allSalesData: CleanSalesRecord[] = [];
-
-/**
- * Loads the sales data from the CSV file and stores it in memory.
- */
-export const initializeData = async () => {
-    try {
-        allSalesData = await loadSalesData();
-        console.log(`Data loaded successfully. Total records: ${allSalesData.length}`);
-    } catch (error) {
-        console.error("Failed to load sales data:", error);
-        process.exit(1); 
-    }
-};
-
 export interface SalesQuery {
     search?: string;
     page?: number;
@@ -25,11 +8,11 @@ export interface SalesQuery {
     
     regions?: string[];
     genders?: string[];
-    ageRange?: [number, number]; 
+    ageRange?: [number, number];
     categories?: string[];
     tags?: string[];
     paymentMethods?: string[];
-    dateRange?: [string, string];
+    dateRange?: [string, string]; 
 }
 
 /**
@@ -83,10 +66,11 @@ const applySFSP = (data: CleanSalesRecord[], query: SalesQuery): CleanSalesRecor
         const [startDateStr, endDateStr] = query.dateRange;
         const startDate = new Date(startDateStr);
         const endDate = new Date(endDateStr);
+        endDate.setHours(23, 59, 59, 999);
 
         if (!isNaN(startDate.getTime()) && !isNaN(endDate.getTime())) {
             filteredData = filteredData.filter(record => {
-                const recordDate = new Date(record.date.toDateString());
+                const recordDate = record.date;
                 
                 return recordDate >= startDate && recordDate <= endDate;
             });
@@ -94,7 +78,8 @@ const applySFSP = (data: CleanSalesRecord[], query: SalesQuery): CleanSalesRecor
     }
 
     if (query.sortBy) {
-        const { sortBy, sortOrder = 'asc' } = query;
+        const { sortBy, sortOrder = 'desc' } = query; 
+
         filteredData.sort((a, b) => {
             let comparison = 0;
             const isDesc = sortOrder === 'desc';
@@ -102,7 +87,7 @@ const applySFSP = (data: CleanSalesRecord[], query: SalesQuery): CleanSalesRecor
             switch (sortBy) {
                 case 'date':
                     comparison = a.date.getTime() - b.date.getTime();
-                    return isDesc ? comparison * -1 : comparison;
+                    break;
                 case 'quantity':
                     comparison = a.quantity - b.quantity;
                     break;
@@ -112,6 +97,7 @@ const applySFSP = (data: CleanSalesRecord[], query: SalesQuery): CleanSalesRecor
                 default:
                     return 0; 
             }
+            
             return isDesc ? comparison * -1 : comparison;
         });
     }
@@ -122,11 +108,13 @@ const applySFSP = (data: CleanSalesRecord[], query: SalesQuery): CleanSalesRecor
 
 /**
  * Main function to retrieve sales data with SFSP and Pagination applied.
+ * @param allData - The full array of CleanSalesRecord objects.
  * @param query - The request parameters from the frontend.
  * @returns An object containing the paginated data, total records, and total pages.
  */
-export const getSalesData = (query: SalesQuery) => {
-    const processedData = applySFSP(allSalesData, query);
+export const getSalesData = (allData: CleanSalesRecord[], query: SalesQuery) => {
+
+    const processedData = applySFSP(allData, query);
     
     const totalRecords = processedData.length;
     

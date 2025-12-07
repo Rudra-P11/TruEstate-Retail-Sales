@@ -1,26 +1,51 @@
-import express, { Request, Response } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
-import { initializeData } from './services/salesService';
+import { loadSalesData } from './utils/dataLoader'; 
 import salesRoutes from './routes/salesRoutes';
+import { CleanSalesRecord } from './models/SalesRecord';
+
+declare global {
+    namespace Express {
+        interface Request {
+            salesData: CleanSalesRecord[];
+        }
+    }
+}
 
 const PORT = process.env.PORT || 5000;
 
 const app = express();
 
-app.use(cors({ origin: 'http://localhost:3000' })); 
+let globalSalesData: CleanSalesRecord[] = [];
+
+app.use(cors({ origin: 'http://localhost:3000' }));
 app.use(express.json());
 
-app.get('/', (req: Request, res: Response) => {
-    res.status(200).send('Retail Sales Management System API is running.');
-});
+const injectSalesData = (req: Request, res: Response, next: NextFunction) => {
 
-app.use('/api/sales', salesRoutes);
+    req.salesData = globalSalesData;
+    next();
+};
+
 
 const startServer = async () => {
-    await initializeData(); 
+    try {
+        console.log("Starting data loading process via streaming...");
+        globalSalesData = await loadSalesData();
+        console.log("Data loading complete. Server ready to handle requests.");
+    } catch (error) {
+        console.error("CRITICAL: Failed to load sales data. Shutting down.", error);
+        process.exit(1); 
+    }
+
+    app.get('/', (req: Request, res: Response) => {
+        res.status(200).send('Retail Sales Management System API is running.');
+    });
+
+    app.use('/api/sales', injectSalesData, salesRoutes);
 
     app.listen(PORT, () => {
-        console.log('Server started on http://localhost:${PORT}');
+        console.log('Server running on http://localhost:${PORT}');
     });
 };
 

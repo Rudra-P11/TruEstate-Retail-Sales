@@ -3,7 +3,6 @@ import { getSalesData, SalesQuery } from '../services/salesService';
 
 /**
  * Extracts and formats the query parameters for the SalesQuery interface.
- * Handles parsing of multi-value parameters (like regions) and range parameters (like ageRange).
  */
 const formatQuery = (req: Request): SalesQuery => {
     const { search, page, pageSize, sortBy, sortOrder } = req.query;
@@ -53,9 +52,10 @@ const formatQuery = (req: Request): SalesQuery => {
  */
 export const getSales = (req: Request, res: Response) => {
     try {
+        const allSalesData = req.salesData; 
         const query = formatQuery(req);
         
-        const result = getSalesData(query);
+        const result = getSalesData(allSalesData, query);
 
         if (result.totalRecords === 0) {
             return res.status(200).json({

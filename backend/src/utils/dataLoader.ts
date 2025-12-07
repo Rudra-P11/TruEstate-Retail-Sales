@@ -59,34 +59,34 @@ const cleanRecord = (record: SalesRecord): CleanSalesRecord => {
 };
 
 /**
- * Loads and parses the CSV data asynchronously.
+ * Loads and parses the CSV data asynchronously using streaming.
  * @returns A promise that resolves to an array of CleanSalesRecord objects.
  */
 export const loadSalesData = (): Promise<CleanSalesRecord[]> => {
     return new Promise((resolve, reject) => {
-        const results: SalesRecord[] = [];
+        const results: CleanSalesRecord[] = [];
 
         if (!fs.existsSync(DATA_FILE_PATH)) {
             console.error(`Error: Data file not found at ${DATA_FILE_PATH}`);
             return reject(new Error('Data file not found.'));
         }
 
-        fs.createReadStream(DATA_FILE_PATH)
+        const stream = fs.createReadStream(DATA_FILE_PATH)
             .pipe(csv())
-            .on('data', (data) => results.push(data as SalesRecord))
-            .on('end', () => {
-                console.log(`Successfully loaded ${results.length} raw records.`);
+            .on('data', (data) => {
                 try {
-                    const cleanedData = results.map(cleanRecord);
-                    console.log(`Successfully cleaned and processed data.`);
-                    resolve(cleanedData);
+                    const cleanedRecord = cleanRecord(data as SalesRecord);
+                    results.push(cleanedRecord);
                 } catch (error) {
-                    console.error('Error during data cleaning:', error);
-                    reject(error);
+                    console.error('Error during data cleaning for a record:', error);
                 }
             })
+            .on('end', () => {
+                console.log(`Successfully loaded and processed ${results.length} records via streaming.`);
+                resolve(results);
+            })
             .on('error', (error) => {
-                console.error('Error reading CSV file:', error);
+                console.error('Error reading CSV file stream:', error);
                 reject(error);
             });
     });
