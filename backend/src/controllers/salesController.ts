@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { getSalesData, SalesQuery } from '../services/salesService';
 
 /**
- * Extracts and formats the query parameters for the SalesQuery interface.
+ * Extract and format the query parameters for the SalesQuery interface
  */
 const formatQuery = (req: Request): SalesQuery => {
     const { search, page, pageSize, sortBy, sortOrder } = req.query;
@@ -47,15 +47,12 @@ const formatQuery = (req: Request): SalesQuery => {
     return query;
 };
 
-/**
- * Handles the GET /api/sales request.
- */
-export const getSales = (req: Request, res: Response) => {
+
+export const getSales = async (req: Request, res: Response) => {
     try {
-        const allSalesData = req.salesData; 
         const query = formatQuery(req);
         
-        const result = getSalesData(allSalesData, query);
+        const result = await getSalesData(query);
 
         if (result.totalRecords === 0) {
             return res.status(200).json({

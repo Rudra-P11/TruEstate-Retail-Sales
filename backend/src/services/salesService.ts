@@ -1,4 +1,5 @@
-import { CleanSalesRecord } from '../models/SalesRecord';
+import SalesRecordModel, { CleanSalesRecord } from '../models/SalesRecord';
+import { FilterQuery, SortOrder } from 'mongoose';
 export interface SalesQuery {
     search?: string;
     page?: number;
@@ -8,7 +9,7 @@ export interface SalesQuery {
     
     regions?: string[];
     genders?: string[];
-    ageRange?: [number, number];
+    ageRange?: [number, number]; 
     categories?: string[];
     tags?: string[];
     paymentMethods?: string[];
@@ -16,28 +17,23 @@ export interface SalesQuery {
 }
 
 /**
- * Applies search, filtering, and sorting to the entire dataset.
- * @param data - The dataset to process.
- * @param query - The search/filter/sort parameters.
- * @returns The processed and sorted data.
+ * Build the MongoDB query filter object based on API parameters
+ * Implementing Search and all Filters.
  */
-const applySFSP = (data: CleanSalesRecord[], query: SalesQuery): CleanSalesRecord[] => {
-    let filteredData = [...data];
+const buildFilterQuery = (query: SalesQuery): FilterQuery<CleanSalesRecord> => {
+    const filter: FilterQuery<CleanSalesRecord> = {};
 
     if (query.search && query.search.trim()) {
-        const searchTerm = query.search.trim().toLowerCase();
-        filteredData = filteredData.filter(record => 
-            record.customerName.toLowerCase().includes(searchTerm) ||
-            record.phoneNumber.includes(searchTerm)
-        );
+        const regex = new RegExp(query.search.trim(), 'i');
+        filter.$or = [
+            { customerName: { $regex: regex } },
+            { phoneNumber: { $regex: regex } }
+        ];
     }
 
-    const applyMultiFilter = (field: keyof CleanSalesRecord, allowedValues: string[] | undefined) => {
+    const applyMultiFilter = (mongoField: keyof CleanSalesRecord, allowedValues: string[] | undefined) => {
         if (allowedValues && allowedValues.length > 0) {
-            const allowedSet = new Set(allowedValues.map(v => v.toLowerCase()));
-            filteredData = filteredData.filter(record => 
-                allowedSet.has(String(record[field]).toLowerCase())
-            );
+            filter[mongoField] = { $in: allowedValues };
         }
     };
 
@@ -47,18 +43,13 @@ const applySFSP = (data: CleanSalesRecord[], query: SalesQuery): CleanSalesRecor
     applyMultiFilter('paymentMethod', query.paymentMethods);
 
     if (query.tags && query.tags.length > 0) {
-        const tagSet = new Set(query.tags.map(tag => tag.toLowerCase()));
-        filteredData = filteredData.filter(record =>
-            record.tags.some(tag => tagSet.has(tag))
-        );
+        filter.tags = { $in: query.tags.map(tag => tag.toLowerCase()) };
     }
 
     if (query.ageRange && query.ageRange.length === 2) {
         const [minAge, maxAge] = query.ageRange;
         if (minAge <= maxAge && minAge >= 0) {
-            filteredData = filteredData.filter(record => 
-                record.age >= minAge && record.age <= maxAge
-            );
+            filter.age = { $gte: minAge, $lte: maxAge };
         }
     }
 
@@ -69,66 +60,55 @@ const applySFSP = (data: CleanSalesRecord[], query: SalesQuery): CleanSalesRecor
         endDate.setHours(23, 59, 59, 999);
 
         if (!isNaN(startDate.getTime()) && !isNaN(endDate.getTime())) {
-            filteredData = filteredData.filter(record => {
-                const recordDate = record.date;
-                
-                return recordDate >= startDate && recordDate <= endDate;
-            });
+            filter.date = { $gte: startDate, $lte: endDate };
         }
     }
 
-    if (query.sortBy) {
-        const { sortBy, sortOrder = 'desc' } = query; 
-
-        filteredData.sort((a, b) => {
-            let comparison = 0;
-            const isDesc = sortOrder === 'desc';
-
-            switch (sortBy) {
-                case 'date':
-                    comparison = a.date.getTime() - b.date.getTime();
-                    break;
-                case 'quantity':
-                    comparison = a.quantity - b.quantity;
-                    break;
-                case 'customerName':
-                    comparison = a.customerName.localeCompare(b.customerName);
-                    break;
-                default:
-                    return 0; 
-            }
-            
-            return isDesc ? comparison * -1 : comparison;
-        });
-    }
-
-    return filteredData;
+    return filter;
 };
 
-
 /**
- * Main function to retrieve sales data with SFSP and Pagination applied.
- * @param allData - The full array of CleanSalesRecord objects.
- * @param query - The request parameters from the frontend.
- * @returns An object containing the paginated data, total records, and total pages.
+ * Main function to retrieve sales data from MongoDB with SFSP and Pagination applied.
  */
-export const getSalesData = (allData: CleanSalesRecord[], query: SalesQuery) => {
-
-    const processedData = applySFSP(allData, query);
+export const getSalesData = async (query: SalesQuery) => {
+    const filter = buildFilterQuery(query);
     
-    const totalRecords = processedData.length;
-    
-    const pageSize = query.pageSize || 10; 
+    const pageSize = query.pageSize || 10;
     const page = query.page && query.page > 0 ? query.page : 1;
-    const startIndex = (page - 1) * pageSize;
-    const endIndex = page * pageSize;
+    const skip = (page - 1) * pageSize;
 
-    const paginatedData = processedData.slice(startIndex, endIndex);
+    let sort: { [key: string]: SortOrder } = {};
+    const sortOrder = query.sortOrder === 'asc' ? 1 : -1;
+
+    switch (query.sortBy) {
+        case 'date':
+            sort.date = -1; 
+            break;
+        case 'quantity':
+            sort.quantity = sortOrder;
+            break;
+        case 'customerName':
+            sort.customerName = sortOrder;
+            break;
+        default:
+            sort.date = -1;
+            break;
+    }
+
+    const [data, totalRecords] = await Promise.all([
+        SalesRecordModel.find(filter)
+            .sort(sort)
+            .skip(skip)
+            .limit(pageSize)
+            .lean() as unknown as Promise<CleanSalesRecord[]>,
+        
+        SalesRecordModel.countDocuments(filter)
+    ]);
     
     const totalPages = totalRecords > 0 ? Math.ceil(totalRecords / pageSize) : 1;
 
     return {
-        data: paginatedData,
+        data,
         totalRecords,
         totalPages,
         currentPage: page,
