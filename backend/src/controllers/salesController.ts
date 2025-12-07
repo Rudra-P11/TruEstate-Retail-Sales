@@ -70,3 +70,35 @@ export const getSales = async (req: Request, res: Response) => {
         });
     }
 };
+
+export const getMetrics = async (req: Request, res: Response) => {
+    try {
+        const query = formatQuery(req);
+        
+        const result = await getSalesData({ 
+            ...query, 
+            page: 1, 
+            pageSize: 10000 
+        });
+
+        const metricData = result.data;
+        const totals = metricData.reduce((acc, record) => {
+            acc.totalUnitsSold += Number(record.Quantity) || 0;
+            acc.totalAmount += Number(record['Final Amount']) || 0;
+            const discountAmount = (Number(record['Total Amount']) || 0) - (Number(record['Final Amount']) || 0);
+            acc.totalDiscount += discountAmount;
+            return acc;
+        }, { totalUnitsSold: 0, totalAmount: 0, totalDiscount: 0 });
+
+        res.status(200).json({
+            ...totals,
+            totalRecords: result.totalRecords
+        });
+    } catch (error) {
+        console.error("Error in getMetrics controller:", error);
+        res.status(500).json({ 
+            message: 'An internal server error occurred while calculating metrics.',
+            error: error instanceof Error ? error.message : "Unknown error"
+        });
+    }
+};

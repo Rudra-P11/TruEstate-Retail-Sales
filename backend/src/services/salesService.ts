@@ -16,6 +16,8 @@ export interface SalesQuery {
     dateRange?: [string, string]; 
 }
 
+type FilterField = keyof CleanSalesRecord;
+
 /**
  * Build the MongoDB query filter object based on API parameters
  * Implementing Search and all Filters.
@@ -26,30 +28,30 @@ const buildFilterQuery = (query: SalesQuery): FilterQuery<CleanSalesRecord> => {
     if (query.search && query.search.trim()) {
         const regex = new RegExp(query.search.trim(), 'i');
         filter.$or = [
-            { customerName: { $regex: regex } },
-            { phoneNumber: { $regex: regex } }
+            { 'Customer Name': { $regex: regex } },
+            { 'Phone Number': { $regex: regex } }
         ];
     }
 
-    const applyMultiFilter = (mongoField: keyof CleanSalesRecord, allowedValues: string[] | undefined) => {
+    const applyMultiFilter = (mongoField: FilterField, allowedValues: string[] | undefined) => {
         if (allowedValues && allowedValues.length > 0) {
-            filter[mongoField] = { $in: allowedValues };
+            (filter as any)[mongoField] = { $in: allowedValues };
         }
     };
 
-    applyMultiFilter('customerRegion', query.regions);
-    applyMultiFilter('gender', query.genders);
-    applyMultiFilter('productCategory', query.categories);
-    applyMultiFilter('paymentMethod', query.paymentMethods);
+    applyMultiFilter('Customer Region' as FilterField, query.regions);
+    applyMultiFilter('Gender' as FilterField, query.genders);
+    applyMultiFilter('Product Category' as FilterField, query.categories);
+    applyMultiFilter('Payment Method' as FilterField, query.paymentMethods);
 
     if (query.tags && query.tags.length > 0) {
-        filter.tags = { $in: query.tags.map(tag => tag.toLowerCase()) };
+        (filter as any)['Tags'] = { $regex: query.tags.join('|'), $options: 'i' };
     }
 
     if (query.ageRange && query.ageRange.length === 2) {
         const [minAge, maxAge] = query.ageRange;
         if (minAge <= maxAge && minAge >= 0) {
-            filter.age = { $gte: minAge, $lte: maxAge };
+            (filter as any)['Age'] = { $gte: minAge, $lte: maxAge };
         }
     }
 
@@ -60,7 +62,7 @@ const buildFilterQuery = (query: SalesQuery): FilterQuery<CleanSalesRecord> => {
         endDate.setHours(23, 59, 59, 999);
 
         if (!isNaN(startDate.getTime()) && !isNaN(endDate.getTime())) {
-            filter.date = { $gte: startDate, $lte: endDate };
+            (filter as any)['Date'] = { $gte: startDate, $lte: endDate };
         }
     }
 
@@ -82,18 +84,21 @@ export const getSalesData = async (query: SalesQuery) => {
 
     switch (query.sortBy) {
         case 'date':
-            sort.date = -1; 
+            sort['Date'] = -1; 
             break;
         case 'quantity':
-            sort.quantity = sortOrder;
+            sort['Quantity'] = sortOrder;
             break;
         case 'customerName':
-            sort.customerName = sortOrder;
+            sort['Customer Name'] = sortOrder;
             break;
         default:
-            sort.date = -1;
+            sort['Date'] = -1;
             break;
     }
+
+    console.log('Query filter:', JSON.stringify(filter));
+    console.log('Sort:', JSON.stringify(sort));
 
     const [data, totalRecords] = await Promise.all([
         SalesRecordModel.find(filter)
@@ -104,6 +109,9 @@ export const getSalesData = async (query: SalesQuery) => {
         
         SalesRecordModel.countDocuments(filter)
     ]);
+    
+    console.log('Total records found:', totalRecords);
+    console.log('Data returned:', data.length);
     
     const totalPages = totalRecords > 0 ? Math.ceil(totalRecords / pageSize) : 1;
 
