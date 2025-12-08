@@ -32,7 +32,7 @@ const Header = () => {
                     placeholder="Name, Phone no."
                     value={searchTerm}
                     onChange={onSearchChange}
-                    className="pl-9 pr-3 py-1.5 text-xs border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary-blue w-56"
+                    className="pl-9 pr-3 py-1.5 text-xs border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary-blue w-96"
                 />
                 <RiSearchLine className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-gray-400" />
             </form>

@@ -25,18 +25,18 @@ const SalesTable = () => {
     };
     
     const headers = [
-        { key: 'Transaction ID', label: 'Transaction ID' },
+        { key: 'Transaction ID', label: 'Transaction id' },
         { key: 'Date', label: 'Date', sortable: true, sortKey: 'date' as const },
-        { key: 'Customer ID', label: 'Customer ID' },
+        { key: 'Customer ID', label: 'Customer id' },
         { key: 'Customer Name', label: 'Customer name', sortable: true, sortKey: 'customerName' as const },
-        { key: 'Phone Number', label: 'Phone Number' },
+        { key: 'Phone Number', label: 'Phone number' },
         { key: 'Gender', label: 'Gender' },
         { key: 'Age', label: 'Age' },
-        { key: 'Product Category', label: 'Product Category' },
+        { key: 'Product Category', label: 'Product category' },
         { key: 'Quantity', label: 'Quantity', sortable: true, sortKey: 'quantity' as const },
-        { key: 'Total Amount', label: 'Total Amount' },
+        { key: 'Total Amount', label: 'Total amount' },
         { key: 'Customer Region', label: 'Customer region' },
-        { key: 'Product ID', label: 'Product ID' },
+        { key: 'Product ID', label: 'Product id' },
         { key: 'Employee Name', label: 'Employee name' },
     ];
     
@@ -97,7 +97,7 @@ const SalesTable = () => {
                             {headers.map(header => (
                                 <th
                                     key={header.key}
-                                    className={`px-3 py-1.5 text-left text-xs font-bold text-gray-800 uppercase tracking-wider ${header.sortable ? 'cursor-pointer group' : ''}`}
+                                    className={`px-3 py-1.5 text-left text-sm bg-gray-200 font-medium text-gray-700 whitespace-nowrap ${header.sortable ? 'cursor-pointer group' : ''}`}
                                     onClick={header.sortable ? () => handleHeaderClick(header.sortKey!) : undefined}
                                 >
                                     <div className="flex items-center space-x-0.5">

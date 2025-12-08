@@ -1,7 +1,7 @@
 import { RiDashboardLine, RiUserLine, RiSettings2Line, RiSearchLine, RiArrowDropDownLine, RiLogoutBoxLine } from 'react-icons/ri';
-import { BiCube, BiFolder } from 'react-icons/bi';
+import { BiCube } from 'react-icons/bi';
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 const navigationItems = [
@@ -26,7 +26,15 @@ const Sidebar = () => {
     const [isServicesOpen, setIsServicesOpen] = useState(true);
     const [isInvoicesOpen, setIsInvoicesOpen] = useState(true);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
+    const [profileImage, setProfileImage] = useState<string | null>(null);
     const location = useLocation();
+
+    useEffect(() => {
+        const savedImage = localStorage.getItem('profileImage');
+        if (savedImage) {
+            setProfileImage(savedImage);
+        }
+    }, []);
 
     const NavItem = ({ item }: { item: { name: string, link: string, icon?: React.ElementType, count?: number, active?: boolean, hasSearch?: boolean } }) => {
         const isActive = item.link !== '#' && (location.pathname === item.link || location.pathname.startsWith(item.link + '/'));
@@ -53,24 +61,39 @@ const Sidebar = () => {
         window.location.href = '/';
     };
 
+    const handleProfileImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const result = reader.result as string;
+                setProfileImage(result);
+                localStorage.setItem('profileImage', result);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
     const VaultProfile = () => (
-        <div className="bg-white border-b border-gray-200">
-            <div className="px-3 py-2.5 flex items-center justify-between">
-                <div className="flex items-center flex-1 min-w-0">
-                    <BiFolder className="h-4 w-4 text-primary-blue mr-2 flex-shrink-0" />
-                    <h2 className="text-xs font-bold text-gray-800">Vault</h2>
+        <div className="bg-white border-b border-gray-200 p-3">
+            <div className="flex items-start justify-between gap-3">
+                <div className="h-12 w-12 rounded-lg bg-gray-200 flex-shrink-0 flex items-center justify-center overflow-hidden">
+                    {profileImage ? (
+                        <img src={profileImage} alt="Profile" className="h-full w-full object-cover" />
+                    ) : (
+                        <RiUserLine className="h-6 w-6 text-gray-500" />
+                    )}
                 </div>
-            </div>
-            
-            <div className="border-t border-gray-200 px-3 py-2.5 flex items-center justify-between">
-                <div className="flex items-center flex-1 min-w-0">
-                    <RiUserLine className="h-5 w-5 text-gray-500 p-0.5 bg-gray-200 rounded-full mr-2 flex-shrink-0" />
+                
+                <div className="flex-1 min-w-0 flex flex-col justify-center">
+                    <h2 className="text-xs font-bold text-gray-800">Vault</h2>
                     <p className="text-xs font-semibold text-gray-900 truncate">Anurag Yadav</p>
                 </div>
-                <div className="relative ml-2">
+                
+                <div className="relative ml-2 flex-shrink-0">
                     <button 
                         onClick={() => setIsProfileOpen(!isProfileOpen)}
-                        className="p-0.5 hover:bg-gray-100 rounded transition-colors flex-shrink-0"
+                        className="p-0.5 hover:bg-gray-100 rounded transition-colors"
                     >
                         <RiArrowDropDownLine className={`h-3.5 w-3.5 text-gray-600 transform transition-transform ${isProfileOpen ? 'rotate-180' : ''}`} />
                     </button>
@@ -78,6 +101,16 @@ const Sidebar = () => {
                     {isProfileOpen && (
                         <div className="absolute right-0 mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
                             <div className="space-y-0.5 p-1.5">
+                                <label className="w-full flex items-center space-x-2 px-3 py-1.5 text-xs text-gray-700 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer">
+                                    <input 
+                                        type="file" 
+                                        accept="image/*" 
+                                        onChange={handleProfileImageUpload}
+                                        className="hidden"
+                                    />
+                                    <RiUserLine className="h-3.5 w-3.5" />
+                                    <span>Upload Picture</span>
+                                </label>
                                 <button 
                                     onClick={handleLogout}
                                     className="w-full flex items-center space-x-2 px-3 py-1.5 text-xs text-red-600 hover:bg-red-50 rounded-lg transition-colors"
