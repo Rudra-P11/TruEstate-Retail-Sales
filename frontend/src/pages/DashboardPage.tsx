@@ -4,11 +4,11 @@ import SalesTable from '../components/SalesTable';
 
 const DashboardPage = () => {
   return (
-    <div className="space-y-4">
-      
-      <MetricsPanel />
+    <div className="space-y-3">
       
       <ControlsPanel />
+      
+      <MetricsPanel />
 
       <SalesTable />
       

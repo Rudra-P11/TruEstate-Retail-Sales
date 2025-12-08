@@ -56,8 +56,8 @@ const DateRangeFilter: React.FC<DateRangeFilterProps> = ({ selectedRange, onSele
                 type="button"
                 className={`inline-flex justify-center items-center rounded-md border px-2.5 py-1.5 text-xs font-medium transition-colors ${
                     selectedRange && selectedRange[0] && selectedRange[1]
-                        ? 'border-gray-800 bg-gray-800 text-white'
-                        : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
+                        ? 'border-gray-300 bg-gray-200 text-gray-800'
+                        : 'border-gray-300 bg-gray-100 text-gray-700 hover:bg-gray-100'
                 }`}
                 onClick={() => setIsOpen(!isOpen)}
             >

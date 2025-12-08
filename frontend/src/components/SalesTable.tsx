@@ -56,9 +56,9 @@ const SalesTable = () => {
         }
         
         if (query.sortOrder === 'asc') {
-            return <RiArrowUpSLine className="h-3 w-3 text-white" />;
+            return <RiArrowUpSLine className="h-3 w-3 text-gray-800" />;
         }
-        return <RiArrowDownSLine className="h-3 w-3 text-white" />;
+        return <RiArrowDownSLine className="h-3 w-3 text-gray-800" />;
     };
 
     if (error) {
@@ -90,14 +90,14 @@ const SalesTable = () => {
         }
         
         return (
-            <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200 text-sm">
-                    <thead className="bg-gray-800">
+            <div className="overflow-hidden">
+                <table className="w-full divide-y divide-gray-200 text-sm">
+                    <thead className="bg-white border-b border-gray-200">
                         <tr>
                             {headers.map(header => (
                                 <th
                                     key={header.key}
-                                    className={`px-3 py-1.5 text-left text-xs font-medium text-white uppercase tracking-wider ${header.sortable ? 'cursor-pointer group' : ''}`}
+                                    className={`px-3 py-1.5 text-left text-xs font-bold text-gray-800 uppercase tracking-wider ${header.sortable ? 'cursor-pointer group' : ''}`}
                                     onClick={header.sortable ? () => handleHeaderClick(header.sortKey!) : undefined}
                                 >
                                     <div className="flex items-center space-x-0.5">

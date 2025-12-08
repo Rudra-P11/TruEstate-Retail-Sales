@@ -1,9 +1,8 @@
 import Dropdown from './Dropdown';
-import AgeRangeFilter from './AgeRangeFilter';
 import DateRangeFilter from './DateRangeFilter';
 import { useSales } from '../hooks/useSalesData';
 import { staticFilterOptions } from '../utils/filterOptions';
-import { RiRefreshLine } from 'react-icons/ri'; 
+import { RiRefreshLine, RiFilterLine } from 'react-icons/ri'; 
 
 const SORT_OPTIONS = [
     { label: 'Date', value: 'date' },
@@ -21,20 +20,19 @@ const ControlsPanel = () => {
     const handleSortChange = (sortBy: string, sortOrder: 'asc' | 'desc') => {
         handleSort(sortBy as 'date' | 'quantity' | 'customerName', sortOrder);
     };
-    
-    const handleAgeRangeChange = (range: [number, number]) => {
-        handleFilterChange('ageRange', range);
-    };
 
     const handleDateRangeChange = (range: [string, string]) => {
         handleFilterChange('dateRange', range);
     };
+    
+
     
     return (
         <div className="bg-white p-3 rounded-lg shadow-sm border border-gray-200">
             <div className="flex justify-between items-center gap-2">
                 
                 <div className="flex space-x-2 items-center">
+                    <RiFilterLine className="h-4 w-4 text-gray-400" />
                     <button 
                         onClick={refetch}
                         className="p-1.5 hover:bg-gray-100 rounded-full transition-colors"
@@ -58,10 +56,7 @@ const ControlsPanel = () => {
                         type="filter" 
                     />
                     
-                    <AgeRangeFilter 
-                        selectedRange={query.ageRange} 
-                        onSelect={handleAgeRangeChange} 
-                    />
+
                     
                     <Dropdown 
                         title="Product Category" 
@@ -89,7 +84,6 @@ const ControlsPanel = () => {
                         selectedRange={query.dateRange} 
                         onSelect={handleDateRangeChange} 
                     />
-                    
                 </div>
 
                 <div className="flex items-center space-x-1">

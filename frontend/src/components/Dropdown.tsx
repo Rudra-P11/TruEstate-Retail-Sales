@@ -64,8 +64,8 @@ const Dropdown: React.FC<DropdownProps> = ({
                 type="button"
                 className={`inline-flex justify-center items-center rounded-md border px-2.5 py-1.5 text-xs font-medium transition-colors ${
                     selectedValues.length > 0 || isSortActive(sortBy || '', sortOrder || 'desc')
-                        ? 'border-gray-800 bg-gray-800 text-white'
-                        : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
+                        ? 'border-gray-300 bg-gray-200 text-gray-800'
+                        : 'border-gray-300 bg-gray-100 text-gray-700 hover:bg-gray-100'
                 }`}
                 onClick={() => setIsOpen(!isOpen)}
                 aria-expanded={isOpen}
@@ -81,7 +81,7 @@ const Dropdown: React.FC<DropdownProps> = ({
                         {type === 'filter' && options.map((option) => (
                             <div
                                 key={option.value}
-                                className="flex items-center px-4 py-2 text-xs text-gray-700 hover:bg-gray-100 cursor-pointer"
+                                className="flex items-center px-4 py-2 text-xs text-gray-700 hover:bg-gray-50 cursor-pointer"
                                 onClick={() => handleFilterClick(option.value)}
                             >
                                 <div className="w-4 h-4 mr-3 border border-gray-300 rounded flex items-center justify-center">
@@ -94,14 +94,14 @@ const Dropdown: React.FC<DropdownProps> = ({
                         {type === 'sort' && options.map((option) => (
                             <div key={option.value}>
                                 <div
-                                    className={`flex justify-between items-center px-4 py-2 text-xs hover:bg-gray-100 cursor-pointer ${isSortActive(option.value, 'asc') ? 'bg-gray-100 font-semibold text-gray-800' : 'text-gray-700'}`}
+                                    className={`flex justify-between items-center px-4 py-2 text-xs hover:bg-gray-50 cursor-pointer ${isSortActive(option.value, 'asc') ? 'bg-gray-50 font-semibold text-gray-800' : 'text-gray-700'}`}
                                     onClick={() => handleSortClick(option.value, 'asc')}
                                 >
                                     {option.label} (A-Z / Low-High)
                                     {isSortActive(option.value, 'asc') && <RiCheckLine className="h-4 w-4 text-gray-800" />}
                                 </div>
                                 <div
-                                    className={`flex justify-between items-center px-4 py-2 text-xs hover:bg-gray-100 cursor-pointer ${isSortActive(option.value, 'desc') ? 'bg-gray-100 font-semibold text-gray-800' : 'text-gray-700'}`}
+                                    className={`flex justify-between items-center px-4 py-2 text-xs hover:bg-gray-50 cursor-pointer ${isSortActive(option.value, 'desc') ? 'bg-gray-50 font-semibold text-gray-800' : 'text-gray-700'}`}
                                     onClick={() => handleSortClick(option.value, 'desc')}
                                 >
                                     {option.label} (Z-A / High-Low)

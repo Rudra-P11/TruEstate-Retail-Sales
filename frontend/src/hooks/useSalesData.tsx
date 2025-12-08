@@ -9,6 +9,15 @@ import {
 } from '../types/data';
 
 
+interface MetricsResponse {
+    totalUnitsSold: number;
+    totalAmount: number;
+    totalDiscount: number;
+    totalRecords: number;
+}
+
+type FilterChangeValue = string[] | [number, number] | [string, string] | string | number;
+
 interface SalesContextType {
     data: SalesRecord[];
     query: SalesQueryState;
@@ -30,7 +39,7 @@ interface SalesContextType {
     handleSearch: (searchTerm: string) => void;
     handlePagination: (page: number) => void;
     handleSort: (sortBy: 'date' | 'quantity' | 'customerName', sortOrder: 'asc' | 'desc') => void;
-    handleFilterChange: (key: keyof SalesQueryState, value: any) => void;
+    handleFilterChange: (key: keyof SalesQueryState, value: FilterChangeValue) => void;
     refetch: () => void;
 }
 
@@ -81,7 +90,7 @@ export const SalesDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
                 const pagedResponse = await axios.get<SalesApiResponse>(`${API_BASE_URL}?${params}`);
                 
                 const metricsParams = buildQueryParams({ ...query, page: 1, pageSize: 1 }); 
-                const metricsResponse = await axios.get<any>(`${API_BASE_URL}/metrics?${metricsParams}`);
+                const metricsResponse = await axios.get<MetricsResponse>(`${API_BASE_URL}/metrics?${metricsParams}`);
 
                 setResponse(pagedResponse.data);
                 
@@ -121,7 +130,7 @@ export const SalesDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         setQuery(prev => ({ ...prev, sortBy, sortOrder, page: 1 }));
     };
 
-    const handleFilterChange = (key: keyof SalesQueryState, value: any) => {
+    const handleFilterChange = (key: keyof SalesQueryState, value: FilterChangeValue) => {
         setQuery(prev => ({ ...prev, [key]: value, page: 1 }));
     };
     
@@ -156,6 +165,7 @@ export const SalesDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useSales = () => {
     const context = useContext(SalesContext);
     if (context === undefined) {
