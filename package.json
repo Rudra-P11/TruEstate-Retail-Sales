@@ -1,0 +1,16 @@
+{
+  "name": "truestate-sde-assignment",
+  "version": "1.0.0",
+  "description": "Retail Sales Management System - TruEstate SDE Internship Assignment",
+  "scripts": {
+    "start:backend": "npm run start --workspace=backend",
+    "start:frontend": "npm run dev --workspace=frontend",
+    "install:all": "npm install && npm install --workspace=backend && npm install --workspace=frontend"
+  },
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "author": "Rudra",
+  "license": "ISC"
+}

@@ -1,6 +1,8 @@
-import { RiDashboardLine, RiUserLine, RiSettings2Line, RiSearchLine, RiArrowDropDownLine, RiLogoutBoxLine } from 'react-icons/ri';
+import { RiDashboardLine, RiUserLine, RiSettings2Line, RiSearchLine, RiArrowDropDownLine, RiLogoutBoxLine, RiLockLine, RiCloseCircleLine } from 'react-icons/ri';
 import { BiCube } from 'react-icons/bi';
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io';
+import { FiCircle, FiSquare } from 'react-icons/fi';
+import { FaFileAlt, FaFileInvoice } from 'react-icons/fa';
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
@@ -11,15 +13,15 @@ const navigationItems = [
 ];
 
 const serviceItems = [
-  { name: 'Pre-active', link: '/services/pre-active' },
-  { name: 'Active', link: '/services/active' },
-  { name: 'Blocked', link: '/services/blocked' },
-  { name: 'Closed', link: '/services/closed' },
+  { name: 'Pre-active', link: '/services/pre-active', icon: FiCircle },
+  { name: 'Active', link: '/services/active', icon: FiSquare },
+  { name: 'Blocked', link: '/services/blocked', icon: RiLockLine },
+  { name: 'Closed', link: '/services/closed', icon: RiCloseCircleLine },
 ];
 
 const invoiceItems = [
-  { name: 'Proforma Invoices', link: '/invoices/proforma', active: true },
-  { name: 'Final Invoices', link: '/invoices/final', hasSearch: true },
+  { name: 'Proforma Invoices', link: '/invoices/proforma', active: true, icon: FaFileAlt },
+  { name: 'Final Invoices', link: '/invoices/final', hasSearch: true, icon: FaFileInvoice },
 ];
 
 const Sidebar = () => {
