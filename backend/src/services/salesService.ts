@@ -26,11 +26,18 @@ const buildFilterQuery = (query: SalesQuery): FilterQuery<CleanSalesRecord> => {
     const filter: FilterQuery<CleanSalesRecord> = {};
 
     if (query.search && query.search.trim()) {
-        const regex = new RegExp(query.search.trim(), 'i');
-        filter.$or = [
-            { 'Customer Name': { $regex: regex } },
-            { 'Phone Number': { $regex: regex } }
+        const searchTerm = query.search.trim();
+        const regex = new RegExp(searchTerm, 'i');
+        
+        const orConditions: any[] = [
+            { 'Customer Name': { $regex: regex } }
         ];
+        
+        if (!isNaN(Number(searchTerm))) {
+            orConditions.push({ 'Phone Number': Number(searchTerm) });
+        }
+        
+        filter.$or = orConditions;
     }
 
     const applyMultiFilter = (mongoField: FilterField, allowedValues: string[] | undefined) => {

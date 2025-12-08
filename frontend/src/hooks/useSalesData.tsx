@@ -85,12 +85,17 @@ export const SalesDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
             setLoading(true);
             setError(null);
             const params = buildQueryParams(query);
+            const url = `${API_BASE_URL}?${params}`;
+
+            console.log('Fetching from:', url);
 
             try {
-                const pagedResponse = await axios.get<SalesApiResponse>(`${API_BASE_URL}?${params}`);
+                const pagedResponse = await axios.get<SalesApiResponse>(url);
                 
                 const metricsParams = buildQueryParams({ ...query, page: 1, pageSize: 1 }); 
-                const metricsResponse = await axios.get<MetricsResponse>(`${API_BASE_URL}/metrics?${metricsParams}`);
+                const metricsUrl = `${API_BASE_URL}/metrics?${metricsParams}`;
+                console.log('Fetching metrics from:', metricsUrl);
+                const metricsResponse = await axios.get<MetricsResponse>(metricsUrl);
 
                 setResponse(pagedResponse.data);
                 
@@ -103,9 +108,11 @@ export const SalesDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
             } catch (err) {
                 console.error("API Fetch Error:", err);
+                console.error("API URL attempted:", url);
                 if (axios.isAxiosError(err)) {
                     console.error("Axios error response:", err.response?.data);
                     console.error("Axios error status:", err.response?.status);
+                    console.error("Axios error message:", err.message);
                 }
                 setError("Failed to fetch data from the server. Check backend connection.");
                 setResponse(null);
