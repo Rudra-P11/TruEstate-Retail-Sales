@@ -6,7 +6,7 @@
   "scripts": {
     "start": "ts-node src/index.ts",
     "dev": "ts-node-dev --respawn src/index.ts",
-    "build": "tsc",
+    "build": "tsc --skipLibCheck",
     "serve": "node dist/index.js",
     "load-data": "ts-node src/scripts/loadData.ts"
   },
