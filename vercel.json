@@ -8,13 +8,5 @@
       "destination": "/"
     }
   ],
-  "env": {
-    "VITE_API_URL": "@vite_api_url"
-  },
-  "regions": ["iad1"],
-  "functions": {
-    "frontend/**/*.ts": {
-      "runtime": "nodejs18.x"
-    }
-  }
+  "regions": ["iad1"]
 }
