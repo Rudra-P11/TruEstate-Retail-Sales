@@ -56,7 +56,7 @@ export interface SalesQueryState {
     dateRange: [string, string] | undefined; 
 }
 
-export const API_BASE_URL = 'http://localhost:5000/api/sales';
+export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/sales';
 export const DEFAULT_PAGE_SIZE = 25; 
 export const INITIAL_QUERY_STATE: SalesQueryState = {
     search: '',
