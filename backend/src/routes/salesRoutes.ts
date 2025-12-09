@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import { getSales, getMetrics } from '../controllers/salesController';
 import SalesRecordModel from '../models/SalesRecord';
 
@@ -7,7 +7,7 @@ const router = Router();
 router.get('/', getSales);
 router.get('/metrics', getMetrics);
 
-router.get('/debug/info', async (req, res) => {
+router.get('/debug/info', async (req: Request, res: Response) => {
     try {
         const db = SalesRecordModel.collection.conn.db;
         if (!db) {

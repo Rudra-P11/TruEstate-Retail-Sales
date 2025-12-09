@@ -83,12 +83,12 @@ async function loadData() {
                     await SalesRecordModel.insertMany(records, { ordered: false });
                     console.log(`Successfully inserted ${records.length} records into the database.`);
                 } catch (error) {
-                    console.error('Error inserting records:', error);
+                    console.error('Error inserting records:', error instanceof Error ? error.message : error);
                 }
                 await mongoose.disconnect();
                 console.log('Database connection closed.');
             })
-            .on('error', (error) => {
+            .on('error', (error: Error) => {
                 console.error('Error reading CSV:', error);
                 mongoose.disconnect();
                 process.exit(1);

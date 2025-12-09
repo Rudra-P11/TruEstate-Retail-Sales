@@ -82,7 +82,7 @@ export const getMetrics = async (req: Request, res: Response) => {
         });
 
         const metricData = result.data;
-        const totals = metricData.reduce((acc, record) => {
+        const totals = metricData.reduce((acc: { totalUnitsSold: number; totalAmount: number; totalDiscount: number }, record) => {
             acc.totalUnitsSold += Number(record.Quantity) || 0;
             acc.totalAmount += Number(record['Final Amount']) || 0;
             const discountAmount = (Number(record['Total Amount']) || 0) - (Number(record['Final Amount']) || 0);
