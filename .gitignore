@@ -48,6 +48,13 @@ Thumbs.db
 coverage/
 .nyc_output/
 
+# Data files (large datasets)
+*.csv
+*.xlsx
+*.xls
+*.json.gz
+backend/truestate_assignment_dataset.*
+
 # Misc
 *.seed
 .cache/
