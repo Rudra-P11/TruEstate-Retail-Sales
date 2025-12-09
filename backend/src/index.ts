@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import * as dotenv from 'dotenv';

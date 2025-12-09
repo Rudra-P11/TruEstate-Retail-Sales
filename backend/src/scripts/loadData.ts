@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import mongoose from 'mongoose';
 import fs from 'fs';
 import csv from 'csv-parser';
